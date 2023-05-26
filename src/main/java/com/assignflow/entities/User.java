@@ -1,4 +1,4 @@
-package com.assignflow.domain;
+package com.assignflow.entities;
 
 import jakarta.persistence.*;
 import lombok.Getter;
