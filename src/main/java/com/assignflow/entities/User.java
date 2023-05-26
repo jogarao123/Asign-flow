@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -19,4 +20,11 @@ public class User {
     private String username;
 
     private String password;
+
+    @OneToMany(mappedBy = "user")
+    private List<Authority> authorities;
+
+    @OneToMany(mappedBy = "assignedTo")
+    private List<Assignment> assignments;
+
 }

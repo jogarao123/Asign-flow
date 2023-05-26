@@ -18,6 +18,7 @@ public class Assignment {
     private String codeReviewVideoUrl;
 
     @ManyToOne(optional = false)
+    @JoinColumn(name = "user_id")
     private User assignedTo;
 
 
