@@ -1,5 +1,6 @@
 package com.assignflow.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,10 +22,13 @@ public class User {
 
     private String password;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user",fetch = FetchType.EAGER)
+    @JsonIgnore
+
     private List<Authority> authorities;
 
     @OneToMany(mappedBy = "assignedTo")
+    @JsonIgnore
     private List<Assignment> assignments;
 
 }
