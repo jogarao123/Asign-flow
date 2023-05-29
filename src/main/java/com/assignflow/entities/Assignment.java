@@ -1,12 +1,16 @@
 package com.assignflow.entities;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Assignment {
 
     @Id
@@ -18,7 +22,7 @@ public class Assignment {
     private String codeReviewVideoUrl;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "assigned_to_id", referencedColumnName = "id")
     private User assignedTo;
 
 

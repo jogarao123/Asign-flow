@@ -16,7 +16,6 @@ public class Authority implements GrantedAuthority {
     private String authority;
     @ManyToOne(optional = false)
     @JoinColumn(name = "user_id")
-    @JsonIgnore
     private User user;
 
     public Authority() {

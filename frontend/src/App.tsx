@@ -1,42 +1,29 @@
 import './App.css'
-import {useEffect, useState} from "react";
+import {Route, Routes} from "react-router-dom";
+import Dashboard from "./components/Dashboard";
+import HomePage from "./components/HomePage";
+import PrivateRoute from "./components/PrivateRoute";
+import LoginPage from "./components/LoginPage";
+import AssignmentView from "./components/AssignmentView";
 
-interface RequestBody {
-    username: string,
-    password: string
-}
 
 function App() {
-    const [token, setToken] = useState<string | null>("")
-    const data: RequestBody = {username: 'jogs', password: '1234'};
+   return (
+       <Routes>
+          <Route path="/" element={<HomePage/>}/>
+          <Route path="/dashboard" element={
+             <PrivateRoute>
+                <Dashboard/>
+             </PrivateRoute>}/>
 
-    useEffect(() => {
-        fetch(`http://localhost:8080/api/auth/login`,
-            {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            })
-            .then(res => {
-                return Promise.all([res.json(), res.headers]);
-            })
-            .then(([resJson, headers]) => {
-                setToken(headers.get('Authorization'))
-                console.log('res is ', resJson)
-            });
-
-    }, [])
-
-    return (
-        <>
-            Hello
-            <div>
-                token is {token}
-            </div>
-        </>
-    )
+          <Route path="/login" element={<LoginPage/>}/>
+          <Route path="/assignments/:id" element={
+             <PrivateRoute>
+                <AssignmentView/>
+             </PrivateRoute>
+          } />
+       </Routes>
+   )
 }
 
 export default App

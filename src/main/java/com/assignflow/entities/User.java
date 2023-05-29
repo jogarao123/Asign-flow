@@ -20,11 +20,11 @@ public class User {
     private LocalDate cohortStartDate;
     private String username;
 
+    @JsonIgnore
     private String password;
 
     @OneToMany(mappedBy = "user",fetch = FetchType.EAGER)
     @JsonIgnore
-
     private List<Authority> authorities;
 
     @OneToMany(mappedBy = "assignedTo")
