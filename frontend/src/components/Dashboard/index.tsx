@@ -1,5 +1,4 @@
 import {useLocalStorage} from "../../util/useLocalStorage.ts";
-import {Link} from "react-router-dom";
 
 function Dashboard() {
    const [jwt] = useLocalStorage('jwt', '');
@@ -9,10 +8,16 @@ function Dashboard() {
          method: 'POST',
          headers: {
             'Content-Type': 'application/json',
-            Authentication:`Bearer ${jwt}`
+            Authorization: `Bearer ${jwt}`
          },
-
       })
+        .then((response) => {
+           if (response.status === 200) return response.json();
+        })
+        .then((assignment) => {
+            window.location.href=`/assignments/${assignment.id}`;
+        })
+
    }
 
    return <div style={{margin: "2em"}}>

@@ -19,6 +19,12 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
+
+import java.util.Arrays;
+import java.util.Collections;
 
 @Configuration
 @EnableWebSecurity
@@ -26,11 +32,11 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 public class SecurityConfig {
 
     private final JwtFilter jwtFilter;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
       http.
               csrf(csrf->csrf.disable())
-              .cors(cors->cors.disable())
               .authorizeHttpRequests((requests)->
                       requests.requestMatchers(new AntPathRequestMatcher("/api/auth/**")).permitAll()
                               .anyRequest().authenticated()
@@ -41,7 +47,8 @@ public class SecurityConfig {
                       exception.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
                               .accessDeniedHandler(accessDeniedHandler())
               )
-              .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+              .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+              .addFilter(corsFilter());
 
       return http.build();
     }
@@ -54,7 +61,19 @@ public class SecurityConfig {
            response.getWriter().write("Access Denied");
         });
     }
+    @Bean
+    public CorsFilter corsFilter() {
+        CorsConfiguration corsConfig = new CorsConfiguration();
+        corsConfig.setAllowedOrigins(Collections.singletonList("*"));
+        corsConfig.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
+        corsConfig.setAllowedHeaders(Collections.singletonList("*"));
+        corsConfig.setExposedHeaders(Collections.singletonList("Authorization"));
 
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", corsConfig);
+
+        return new CorsFilter(source);
+    }
 
     @Bean
     public PasswordEncoder passwordEncoder(){
