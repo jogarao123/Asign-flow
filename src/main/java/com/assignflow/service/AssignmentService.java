@@ -8,6 +8,9 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+import java.util.Set;
+
 @Service
 @AllArgsConstructor
 public class AssignmentService {
@@ -21,5 +24,13 @@ public class AssignmentService {
         assignmentRepository.save(assignment);
 
         return assignment;
+    }
+
+    public Set<Assignment> findByUser(SecurityUser user){
+        return assignmentRepository.findByAssignedTo(user.getUser());
+    }
+
+    public Optional<Assignment> findById(Long assignmentId){
+        return assignmentRepository.findById(assignmentId);
     }
 }

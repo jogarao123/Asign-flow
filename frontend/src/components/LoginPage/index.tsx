@@ -1,5 +1,6 @@
 import {useLocalStorage} from "../../util/useLocalStorage";
 import {useState} from "react";
+import {URL} from "../../types/types.ts";
 
 interface RequestBody {
    username: string,
@@ -10,7 +11,7 @@ function LoginPage() {
    const [credentials, setCredentials] = useState<RequestBody>({username: '', password: ''});
    const [, setJwt] = useLocalStorage('jwt', '');
    const handleLogin = () => {
-      fetch(`http://localhost:8080/api/auth/login`,
+      fetch(`${URL}/api/auth/login`,
         {
            method: 'POST',
            headers: {
