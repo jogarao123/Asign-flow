@@ -16,7 +16,6 @@ function Dashboard() {
          },
       })
         .then((response) => {
-           console.log('response is ', response)
            if (response.status === 200) return response.json();
         })
         .then((assignments: any) => {

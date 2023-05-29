@@ -1,14 +1,14 @@
 
 export const URL='http://localhost:8080'
 export interface User {
-   id: number;
+   id: any;
    cohortStartDate: string;
    username: string;
    password: string;
 }
 
 export interface Assignment {
-   id: number;
+   id: any;
    status: string;
    githubUrl: string | null;
    branch: string | null;

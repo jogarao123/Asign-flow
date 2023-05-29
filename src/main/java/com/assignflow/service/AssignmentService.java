@@ -22,10 +22,12 @@ public class AssignmentService {
         assignment.setStatus("Needs to be Submitted");
         assignment.setAssignedTo(securityUser.getUser());
         assignmentRepository.save(assignment);
-
         return assignment;
     }
 
+    public Assignment save(Assignment assignment){
+        return assignmentRepository.save(assignment);
+    }
     public Set<Assignment> findByUser(SecurityUser user){
         return assignmentRepository.findByAssignedTo(user.getUser());
     }
