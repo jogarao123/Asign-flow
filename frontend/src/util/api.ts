@@ -14,7 +14,8 @@ export const callApi = async (path: string, {method = 'GET', body = null, token 
       headers,
       body: body ? JSON.stringify(body) : null,
    });
-
+   // if(response.status===401)
+   //    window.location.href = '/login'
    if (!response.ok) {
       throw new Error('Failed to fetch data');
    }
@@ -33,4 +34,8 @@ export const fetchAssignmentById = (id: string, jwt: string) => {
 
 export const fetchAssignments = (jwt: string) => {
    return callApi(`/api/assignments`, {method: 'GET', token: jwt});
+}
+
+export const validateToken=(jwt:string)=>{
+   return callApi(`/api/auth/validate?token=${jwt}`,{method:'GET',token:jwt});
 }

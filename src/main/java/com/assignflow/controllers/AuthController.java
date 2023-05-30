@@ -1,8 +1,10 @@
 package com.assignflow.controllers;
 
 import com.assignflow.dto.AuthCredentialsRequest;
+import com.assignflow.entities.User;
 import com.assignflow.model.SecurityUser;
 import com.assignflow.util.JwtUtil;
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -11,6 +13,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,9 +43,15 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
-    @GetMapping("/hi")
-    public ResponseEntity<String> hi(){
-        return ResponseEntity.ok("Jogarao");
+
+    @GetMapping("/validate")
+    public ResponseEntity<?> validateToken (@RequestParam String token, @AuthenticationPrincipal SecurityUser securityUser) {
+        try {
+            Boolean isValidToken = jwtUtil.validateToken(token, securityUser);
+            return ResponseEntity.ok(isValidToken);
+        } catch (ExpiredJwtException e) {
+            return ResponseEntity.ok(false);
+        }
     }
 
 }

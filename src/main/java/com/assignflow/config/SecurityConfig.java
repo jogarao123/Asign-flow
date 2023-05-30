@@ -43,24 +43,13 @@ public class SecurityConfig {
                       )
               .httpBasic(Customizer.withDefaults())
               .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-              .exceptionHandling(exception->
-                      exception.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
-                              .accessDeniedHandler(accessDeniedHandler())
-              )
               .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
               .addFilter(corsFilter());
 
       return http.build();
     }
 
-    @Bean
-    public AccessDeniedHandler accessDeniedHandler(){
-        return ((request, response, accessDeniedException) ->{
-           response.setStatus(HttpStatus.FORBIDDEN.value());
-           response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-           response.getWriter().write("Access Denied");
-        });
-    }
+
     @Bean
     public CorsFilter corsFilter() {
         CorsConfiguration corsConfig = new CorsConfiguration();
