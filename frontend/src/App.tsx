@@ -5,24 +5,30 @@ import HomePage from "./components/HomePage";
 import PrivateRoute from "./components/PrivateRoute";
 import LoginPage from "./components/LoginPage";
 import AssignmentView from "./components/AssignmentView";
+import {QueryClient, QueryClientProvider} from "react-query";
+
+const queryClient = new QueryClient();
 
 
 function App() {
    return (
-       <Routes>
-          <Route path="/" element={<HomePage/>}/>
-          <Route path="/dashboard" element={
-             <PrivateRoute>
-                <Dashboard/>
-             </PrivateRoute>}/>
+     <QueryClientProvider client={queryClient}>
 
-          <Route path="/login" element={<LoginPage/>}/>
-          <Route path="/assignments/:id" element={
-             <PrivateRoute>
-                <AssignmentView/>
-             </PrivateRoute>
-          } />
-       </Routes>
+        <Routes>
+           <Route path="/" element={<HomePage/>}/>
+           <Route path="/dashboard" element={
+              <PrivateRoute>
+                 <Dashboard/>
+              </PrivateRoute>}/>
+
+           <Route path="/login" element={<LoginPage/>}/>
+           <Route path="/assignments/:id" element={
+              <PrivateRoute>
+                 <AssignmentView/>
+              </PrivateRoute>
+           }/>
+        </Routes>
+     </QueryClientProvider>
    )
 }
 

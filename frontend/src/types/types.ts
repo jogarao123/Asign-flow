@@ -6,6 +6,10 @@ export interface User {
    username: string;
    password: string;
 }
+export interface LoginCredentials {
+   username: string,
+   password: string
+}
 
 export interface Assignment {
    id: any;
@@ -14,4 +18,9 @@ export interface Assignment {
    branch: string | null;
    codeReviewVideoUrl: string | null;
    assignedTo: User;
+}
+export interface CallApiParams{
+   method:'GET'|'POST'|'PUT'|'DELETE',
+   token?:string,
+   body?:any
 }

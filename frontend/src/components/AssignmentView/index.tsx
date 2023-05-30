@@ -1,60 +1,34 @@
 import {useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
-import {Assignment, URL} from "../../types/types.ts";
-import {useLocalStorage} from "../../util/useLocalStorage.ts";
+import {Assignment} from "../../types/types.ts";
+import {useFetchAssignments} from "../../hooks/useFetchAssignment.ts";
+import {useUpdateAssignment} from "../../hooks/useUpdateAssignment.ts";
 
 function AssignmentView() {
-   const [jwt] = useLocalStorage('jwt', '');
    const params = useParams()
-   const [assignment, setAssignment] = useState<Assignment | undefined>();
    const id = params?.id;
+   const {data: fetchedAssignment} = useFetchAssignments(id);
+   const [assignment, setAssignment] = useState<Assignment | undefined>(fetchedAssignment);
+   const updateAssignment = useUpdateAssignment(id);
 
-   const fetchAssignmentById = (id: string) => {
-      fetch(`${URL}/api/assignments/${id}`, {
-         method: 'GET',
-         headers: {
-            Authorization: `Bearer ${jwt}`
-         },
-      })
-        .then((response) => {
-           if (response.status === 200) return response.json();
-        })
-        .then((assignments: any) => {
-           setAssignment(assignments)
-        })
-   }
+   useEffect(()=>{
+      setAssignment(fetchedAssignment)
+   },[fetchedAssignment])
 
-   useEffect(() => {
-      if (id)
-         fetchAssignmentById(id);
-   }, [id])
-
-   const handleChange=(e: React.ChangeEvent<HTMLInputElement>)=>{
-      setAssignment((prevAssignment:Assignment|undefined)=>{
-         if(prevAssignment)
+   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      setAssignment((prevAssignment: Assignment | undefined) => {
+         if (prevAssignment)
             return {
                ...prevAssignment,
-               [e.target.id]:e.target.value
+               [e.target.id]: e.target.value
             }
          else
             return prevAssignment
       })
    }
-   const handleSave=()=>{
-      fetch(`${URL}/api/assignments/${id}`, {
-         method: 'PUT',
-         headers: {
-            Authorization: `Bearer ${jwt}`,
-            'Content-Type': 'application/json',
-         },
-         body:JSON.stringify(assignment)
-      })
-        .then((response) => {
-           if (response.status === 200) return response.json();
-        })
-        .then((assignment: Assignment) => {
-           setAssignment(assignment)
-        })
+   const handleSave = async () => {
+      if (assignment)
+         await updateAssignment.mutate(assignment)
    }
 
 
