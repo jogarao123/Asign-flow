@@ -2,6 +2,7 @@ import {Link} from "react-router-dom";
 import {useFetchAssignments} from "../../hooks/useFetchAssignment.ts";
 import {useCreateAssignment} from "../../hooks/useCreateAssignment.ts";
 import {Assignment} from "../../types/types.ts";
+import {Button} from "react-bootstrap";
 
 
 function Dashboard() {
@@ -14,7 +15,7 @@ function Dashboard() {
    }
 
    return <div style={{margin: "2em"}}>
-      <button onClick={createAssignment}>New Assignment</button>
+      <Button variant="success" onClick={createAssignment}>New Assignment</Button>
       {
         assignments &&  assignments.map((assignment: Assignment) => {
             return <div key={assignment.id}>
