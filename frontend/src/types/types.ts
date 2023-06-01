@@ -18,6 +18,7 @@ export interface Assignment {
    branch: string | null;
    codeReviewVideoUrl: string | null;
    assignedTo: User;
+   name:string|null;
 }
 export interface CallApiParams{
    method:'GET'|'POST'|'PUT'|'DELETE',

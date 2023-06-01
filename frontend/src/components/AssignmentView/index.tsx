@@ -1,8 +1,10 @@
 import {useParams} from "react-router-dom";
+import * as React from "react";
 import {useEffect, useState} from "react";
 import {Assignment} from "../../types/types.ts";
 import {useFetchAssignments} from "../../hooks/useFetchAssignment.ts";
 import {useUpdateAssignment} from "../../hooks/useUpdateAssignment.ts";
+import {Badge, Button, ButtonGroup, Col, Container, Dropdown, DropdownButton, Form, Row} from "react-bootstrap";
 
 function AssignmentView() {
    const params = useParams()
@@ -11,16 +13,16 @@ function AssignmentView() {
    const [assignment, setAssignment] = useState<Assignment | undefined>(fetchedAssignment);
    const updateAssignment = useUpdateAssignment(id);
 
-   useEffect(()=>{
+   useEffect(() => {
       setAssignment(fetchedAssignment)
-   },[fetchedAssignment])
+   }, [fetchedAssignment])
 
    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       setAssignment((prevAssignment: Assignment | undefined) => {
          if (prevAssignment)
             return {
                ...prevAssignment,
-               [e.target.id]: e.target.value
+               [e.target.name]: e.target.value
             }
          else
             return prevAssignment
@@ -34,15 +36,73 @@ function AssignmentView() {
 
    const getAssignmentFormView = () => {
       return assignment?.id ? <>
-         <h1>Assignment {assignment.id}</h1>
-         <h2>Status: {assignment.status}</h2>
-         <h3>
-            GitHub URL: <input type="url" id="githubUrl" value={assignment?.githubUrl || ''} onChange={handleChange}/>
-         </h3>
-         <h3>
-            Branch: <input type="text" id="branch" value={assignment?.branch || ''} onChange={handleChange}/>
-         </h3>
-         <button onClick={handleSave}>Save Assignment</button>
+         <Container className="mt-5">
+            <Row className="d-flex align-items-center">
+               <Col>
+                  <h1>Assignment {assignment.id}</h1>
+               </Col>
+               <Col>
+                  <Badge pill={true} style={{fontSize: "1em"}}>
+                     {assignment.status}
+                  </Badge>
+               </Col>
+            </Row>
+            <Form.Group as={Row} className="my-3" controlId="formPlaintextEmail">
+               <Form.Label column sm="3" md="2">
+                  Assignment Number:
+               </Form.Label>
+               <Col sm="9" md="8" lg="6">
+                  <DropdownButton
+                    as={ButtonGroup}
+                    id="assignmentName"
+                    variant={"info"}
+                    title="Assignment 1"
+                    onSelect={(ek,)=>{
+                       console.log(ek);
+                    }}
+                  >
+                     {["1", "2", "3", "4", "5", "6"].map((assignmentNum) => (
+                       <Dropdown.Item eventKey={assignmentNum}>
+                          {assignmentNum}
+                       </Dropdown.Item>
+                     ))}
+                  </DropdownButton>
+               </Col>
+            </Form.Group>
+            <Form.Group as={Row} className="my-3" controlId="formPlaintextEmail">
+               <Form.Label column sm="3" md="2">
+                  Github Url
+               </Form.Label>
+               <Col sm="9" md="8" lg="6">
+                  <Form.Control
+                    name="githubUrl"
+                    type="url"
+                    onChange={handleChange}
+                    value={assignment.githubUrl || ''}
+                    placeholder="https://github.com/username/repo-name"
+                  >
+                  </Form.Control>
+               </Col>
+            </Form.Group>
+            <Form.Group as={Row} className="mb-3" controlId="formPlaintextEmail">
+               <Form.Label column sm="3" md="2">
+                  Branch:
+               </Form.Label>
+               <Col sm="9" md="8" lg="6">
+                  <Form.Control
+                    name="branch"
+                    type="text"
+                    placeholder="example_branch_name"
+                    onChange={handleChange}
+                    value={assignment.branch || ''}
+                  />
+               </Col>
+            </Form.Group>
+            <Button size="lg" onClick={handleSave}>Save Assignment</Button>
+
+         </Container>
+
+
       </> : <h1>No Assignment</h1>
    }
 
