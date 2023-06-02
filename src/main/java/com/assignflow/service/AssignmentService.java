@@ -1,6 +1,7 @@
 package com.assignflow.service;
 
 import com.assignflow.entities.Assignment;
+import com.assignflow.enums.AssignmentStatusEnum;
 import com.assignflow.model.SecurityUser;
 import com.assignflow.repository.AssignmentRepository;
 import lombok.AllArgsConstructor;
@@ -19,7 +20,7 @@ public class AssignmentService {
     public Assignment save(){
         SecurityUser securityUser= (SecurityUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Assignment assignment = new Assignment();
-        assignment.setStatus("Needs to be Submitted");
+        assignment.setStatus(AssignmentStatusEnum.PENDING_SUBMISSION.getStatus());
         assignment.setAssignedTo(securityUser.getUser());
         assignmentRepository.save(assignment);
         return assignment;

@@ -9,10 +9,11 @@ function Dashboard() {
    const navigate = useNavigate();
    const {data: assignments} = useFetchAssignments();
 
-   const createAssignmentMutation = useCreateAssignment();
+   const {mutateAsync:mutateCreateAssignment} = useCreateAssignment();
 
    const createAssignment = async () => {
-      await createAssignmentMutation.mutate(null);
+     const createdAssignment:Assignment= await mutateCreateAssignment(null);
+     navigate(`/assignments/${createdAssignment.id}`);
    }
 
    return <div style={{margin: "2em"}}>
@@ -31,7 +32,7 @@ function Dashboard() {
                      height: '18rem'
                   }}>
                    <Card.Body className="d-flex flex-column justify-content-around">
-                      <Card.Title>Asssignment {assignment.name} #{assignment.id}</Card.Title>
+                      <Card.Title>Asssignment {assignment.number} #{assignment.id}</Card.Title>
                       <Card.Subtitle className="mb-2 text-muted">{assignment.status}</Card.Subtitle>
                       <Card.Text style={{marginTop: '1em'}}>
                          <b>GitHub URL</b> : {assignment.githubUrl}<br/>

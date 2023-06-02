@@ -18,8 +18,18 @@ export interface Assignment {
    branch: string | null;
    codeReviewVideoUrl: string | null;
    assignedTo: User;
-   name:string|null;
+   number:any;
 }
+export interface AssignmentEnum{
+   assignmentNum: number,
+   assignmentName: string
+}
+
+export interface AssignmentStatus{
+   status:string,
+   step:number
+}
+
 export interface CallApiParams{
    method:'GET'|'POST'|'PUT'|'DELETE',
    token?:string,
