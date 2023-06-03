@@ -1,6 +1,7 @@
 import {useLocalStorage} from "../../util/useLocalStorage";
 import {Navigate} from "react-router-dom";
-import {ReactNode} from "react";
+import {ReactNode, useEffect, useState} from "react";
+import {validateToken} from "../../util/api.ts";
 
 interface PrivateRouteProps {
    children: ReactNode;
@@ -8,8 +9,27 @@ interface PrivateRouteProps {
 
 function PrivateRoute({children}: PrivateRouteProps) {
    const [jwt] = useLocalStorage('jwt', '');
+   const [isLoading, setisLoading] = useState(true);
+   const [isValid, setIsValid] = useState(false);
+
+   useEffect(() => {
+         if (jwt) {
+            validateToken(jwt).then((res) => {
+               setisLoading(false);
+               setIsValid(res);
+            }).catch(() => {
+               setisLoading(false)
+               setIsValid(false);
+            })
+         } else
+            setisLoading(false);
+      }
+   )
+
    return <>
-      {jwt ? children : <Navigate to="/login"/>}
+      {isLoading ? (<h2>Loading...</h2>) :
+         (jwt ? (isValid ? children : <Navigate to="/login"/>)
+            : <Navigate to="/login"/>)}
    </>
 }
 

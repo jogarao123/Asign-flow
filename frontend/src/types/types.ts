@@ -1,12 +1,22 @@
 
 export const URL='http://localhost:8080'
+export const ROLE_CODE_REVIEWER='ROLE_CODE_REVIEWER';
 export interface User {
    id: any;
    cohortStartDate: string;
    username: string;
    password: string;
 }
-
+export interface LoginCredentials {
+   username: string,
+   password: string
+}
+export interface DecodedToken{
+   authorities:string[],
+   exp:number,
+   iat:number,
+   sub:string
+}
 export interface Assignment {
    id: any;
    status: string;
@@ -14,4 +24,20 @@ export interface Assignment {
    branch: string | null;
    codeReviewVideoUrl: string | null;
    assignedTo: User;
+   number:any;
+}
+export interface AssignmentEnum{
+   assignmentNum: number,
+   assignmentName: string
+}
+
+export interface AssignmentStatus{
+   status:string,
+   step:number
+}
+
+export interface CallApiParams{
+   method:'GET'|'POST'|'PUT'|'DELETE',
+   token?:string,
+   body?:any
 }

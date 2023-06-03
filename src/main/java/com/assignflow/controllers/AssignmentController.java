@@ -1,6 +1,7 @@
 
 package com.assignflow.controllers;
 
+import com.assignflow.dto.AssignmentResponseDto;
 import com.assignflow.entities.Assignment;
 import com.assignflow.model.SecurityUser;
 import com.assignflow.service.AssignmentService;
@@ -33,7 +34,8 @@ public class AssignmentController {
     @GetMapping("/{assignmentId}")
     public ResponseEntity<?> getAssignment(@PathVariable Long assignmentId,@AuthenticationPrincipal SecurityUser securityUser){
         Optional<Assignment> assignmentOpt=assignmentService.findById(assignmentId);
-        return ResponseEntity.ok(assignmentOpt.orElse(new Assignment()));
+        AssignmentResponseDto assignmentResponseDto=new AssignmentResponseDto(assignmentOpt.orElse(new Assignment()));
+        return ResponseEntity.ok(assignmentResponseDto);
     }
 
     @PutMapping("/{assignmentId}")
