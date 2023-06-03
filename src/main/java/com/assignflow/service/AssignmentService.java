@@ -3,6 +3,7 @@ package com.assignflow.service;
 import com.assignflow.entities.Assignment;
 import com.assignflow.entities.User;
 import com.assignflow.enums.AssignmentStatusEnum;
+import com.assignflow.enums.AuthorityEnum;
 import com.assignflow.model.SecurityUser;
 import com.assignflow.repository.AssignmentRepository;
 import lombok.AllArgsConstructor;
@@ -22,27 +23,33 @@ public class AssignmentService {
         Assignment assignment = new Assignment();
         assignment.setStatus(AssignmentStatusEnum.PENDING_SUBMISSION.getStatus());
         assignment.setNumber(getNextNumber(securityUser.getUser()));
-        assignment.setAssignedTo(securityUser.getUser());
+        assignment.setUser(securityUser.getUser());
         assignmentRepository.save(assignment);
         return assignment;
     }
 
     private int getNextNumber(User user) {
-        Set<Assignment> assignmentsOfUser = assignmentRepository.findByAssignedTo(user);
+        Set<Assignment> assignmentsOfUser = assignmentRepository.findByUser(user);
         Optional<Integer> nxtNum = assignmentsOfUser.stream()
                 .sorted((a1, a2) -> (a2.getNumber()).compareTo(a1.getNumber()))
-                .map((assignment -> assignment.getNumber()+1))
+                .map((assignment -> assignment.getNumber() + 1))
                 .findFirst();
         return nxtNum.orElse(1);
-
     }
 
     public Assignment save(Assignment assignment) {
         return assignmentRepository.save(assignment);
     }
 
-    public Set<Assignment> findByUser(SecurityUser user) {
-        return assignmentRepository.findByAssignedTo(user.getUser());
+    public Set<Assignment> findByUser(SecurityUser securityUser) {
+        User user = securityUser.getUser();
+        boolean isCodeReviewer = user.getAuthorities()
+                .stream()
+                .filter(authority -> authority.getAuthority().equals(AuthorityEnum.ROLE_CODE_REVIEWER.name()))
+                .count() > 0;
+        if (isCodeReviewer)
+            return assignmentRepository.findByCodeReviewer(user);
+        return assignmentRepository.findByUser(user);
     }
 
     public Optional<Assignment> findById(Long assignmentId) {

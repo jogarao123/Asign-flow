@@ -27,8 +27,11 @@ public class User {
     @JsonIgnore
     private List<Authority> authorities;
 
-    @OneToMany(mappedBy = "assignedTo")
+    @OneToMany(mappedBy = "user")
     @JsonIgnore
     private List<Assignment> assignments;
 
+    @OneToMany(mappedBy = "codeReviewer")
+    @JsonIgnore
+    private List<Assignment> reviewAssignments;
 }

@@ -23,8 +23,11 @@ public class Assignment {
     private String codeReviewVideoUrl;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "assigned_to_id", referencedColumnName = "id")
-    private User assignedTo;
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
 
+    @ManyToOne
+    @JoinColumn(name = "code_reviewer_id",referencedColumnName = "id")
+    private User codeReviewer;
 
 }

@@ -23,7 +23,8 @@ export interface Assignment {
    githubUrl: string | null;
    branch: string | null;
    codeReviewVideoUrl: string | null;
-   assignedTo: User;
+   user: User;
+   codeReviewer:User,
    number:any;
 }
 export interface AssignmentEnum{
@@ -31,9 +32,14 @@ export interface AssignmentEnum{
    assignmentName: string
 }
 
-export interface AssignmentStatus{
+export interface AssignmentStatusEnum{
    status:string,
    step:number
+}
+
+export interface AssignmentMetadata{
+   assignmentEnums:AssignmentEnum[],
+   assignmentStatusEnums:AssignmentStatusEnum[]
 }
 
 export interface CallApiParams{
