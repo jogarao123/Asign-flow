@@ -1,25 +1,23 @@
 import {useNavigate, useParams} from "react-router-dom";
 import * as React from "react";
 import {useEffect, useState} from "react";
-import {Assignment, AssignmentEnum, AssignmentStatus} from "../../types/types.ts";
+import {Assignment, AssignmentEnum, AssignmentMetadata} from "../../types/types.ts";
 import {useFetchAssignments} from "../../hooks/useFetchAssignment.ts";
 import {useUpdateAssignment} from "../../hooks/useUpdateAssignment.ts";
 import {Badge, Button, ButtonGroup, Col, Container, Dropdown, DropdownButton, Form, Row} from "react-bootstrap";
+import {useAssignmentMetadata} from "../../hooks/useAssignmentMetadata.ts";
+import {UseQueryResult} from "react-query";
 
 function AssignmentView() {
    const navigate = useNavigate();
    const params = useParams();
    const id = params?.id;
-   const {data: fetchedAssignment} = useFetchAssignments(id);
-   const [assignment, setAssignment] = useState<Assignment | undefined>(fetchedAssignment?.assignment);
-   const [assignmentEnums, setAssignmentEnums] = useState<AssignmentEnum[] | undefined>(fetchedAssignment?.assignmentEnums);
-   const [assignmentStatuses, setAssignmentStatuses] = useState<AssignmentStatus[] | undefined>(fetchedAssignment?.assignmentStatusEnums);
-   const updateAssignment = useUpdateAssignment(id);
-
+   const {data: assignmentMetadata}: UseQueryResult<AssignmentMetadata, unknown> = useAssignmentMetadata();
+   const {data: fetchedAssignment}: UseQueryResult<Assignment, unknown> = useFetchAssignments(id);
+   const [assignment, setAssignment] = useState<Assignment | undefined>(fetchedAssignment);
+   const updateAssignment = useUpdateAssignment();
    useEffect(() => {
-      setAssignment(fetchedAssignment?.assignment);
-      setAssignmentEnums(fetchedAssignment?.assignmentEnums)
-      setAssignmentStatuses(fetchedAssignment?.assignmentStatusEnums)
+      setAssignment(fetchedAssignment);
    }, [fetchedAssignment])
 
    const updateAssignmentState = (col: string, value: any) => {
@@ -37,10 +35,10 @@ function AssignmentView() {
       updateAssignmentState(e.target.name, e.target.value);
    }
    const handleSubmit = async () => {
-      if (assignment) {
+      if (assignment && assignmentMetadata) {
          const newAssignment: Assignment = {...assignment};
-         if (assignment.status === assignmentStatuses?.[0].status)
-            newAssignment.status = assignmentStatuses?.[1].status;
+         if (assignment.status === assignmentMetadata.assignmentStatusEnums[0].status)
+            newAssignment.status = assignmentMetadata.assignmentStatusEnums[1].status;
 
          await updateAssignment.mutate(newAssignment)
       }
@@ -51,7 +49,7 @@ function AssignmentView() {
    }
 
    const getAssignmentFormView = () => {
-      return assignment?.id ? <>
+      return (assignment?.id && assignmentMetadata) ? <>
          <Container className="mt-5">
             <Row className="d-flex align-items-center">
                <Col>
@@ -76,7 +74,7 @@ function AssignmentView() {
                      title={assignment.number ? `Assignment ${assignment.number}` : 'Select an Assignment'}
                      onSelect={handleSelect}
                   >
-                     {assignmentEnums && assignmentEnums.map((assignmentEnum: AssignmentEnum) => (
+                     {assignmentMetadata && assignmentMetadata.assignmentEnums.map((assignmentEnum: AssignmentEnum) => (
                         <Dropdown.Item
                            key={assignmentEnum.assignmentNum}
                            eventKey={assignmentEnum.assignmentNum}>

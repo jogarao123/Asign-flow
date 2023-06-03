@@ -10,8 +10,7 @@ import lombok.Setter;
 @Setter
 public class AssignmentResponseDto {
     private Assignment assignment;
-    private AssignmentEnum[] assignmentEnums= AssignmentEnum.values();
-    private AssignmentStatusEnum[] assignmentStatusEnums=AssignmentStatusEnum.values();
+
     public AssignmentResponseDto(Assignment assignment){
         this.assignment=assignment;
     }
