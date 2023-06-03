@@ -13,23 +13,23 @@ function PrivateRoute({children}: PrivateRouteProps) {
    const [isValid, setIsValid] = useState(false);
 
    useEffect(() => {
-        if (jwt) {
-           validateToken(jwt).then((res) => {
-              setisLoading(false);
-              setIsValid(res);
-           }).catch(() => {
-              setisLoading(false)
-              setIsValid(false);
-           })
-        } else
-           setisLoading(false);
-     }
+         if (jwt) {
+            validateToken(jwt).then((res) => {
+               setisLoading(false);
+               setIsValid(res);
+            }).catch(() => {
+               setisLoading(false)
+               setIsValid(false);
+            })
+         } else
+            setisLoading(false);
+      }
    )
 
    return <>
       {isLoading ? (<h2>Loading...</h2>) :
-        (jwt ? (isValid ? children : <Navigate to="/login"/>)
-          : <Navigate to="/login"/>)}
+         (jwt ? (isValid ? children : <Navigate to="/login"/>)
+            : <Navigate to="/login"/>)}
    </>
 }
 

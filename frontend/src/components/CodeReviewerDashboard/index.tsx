@@ -1,32 +1,33 @@
 import {useFetchAssignments} from "../../hooks/useFetchAssignment.ts";
-import {useCreateAssignment} from "../../hooks/useCreateAssignment.ts";
 import {Assignment} from "../../types/types.ts";
-import {Badge, Button, Card} from "react-bootstrap";
+import {Badge, Button, Card, Col, Container, Row} from "react-bootstrap";
 import {useNavigate} from "react-router-dom";
 import {useLocalStorage} from "../../util/useLocalStorage.ts";
 
 
-function Dashboard() {
-   const [,setJwt]=useLocalStorage('jwt','');
+function CodeReviewerDashboard() {
+   const [, setJwt] = useLocalStorage('jwt', '');
    const navigate = useNavigate();
    const {data: assignments} = useFetchAssignments();
 
-   const {mutateAsync: mutateCreateAssignment} = useCreateAssignment();
-
-   const createAssignment = async () => {
-      const createdAssignment: Assignment = await mutateCreateAssignment(null);
-      navigate(`/assignments/${createdAssignment.id}`);
-   }
-   const handleLogout=()=>{
+   const handleLogout = () => {
       setJwt('')
-      window.location.href='/login'
+      window.location.href = '/login'
    }
 
-   return <div style={{margin: "2em"}}>
-      <div className="d-flex justify-content-end">
-         <button onClick={handleLogout}>Logout</button>
-      </div>
-      <Button size="lg" onClick={createAssignment}>New Assignment</Button>
+   return (<Container>
+      <Row>
+         <Col>
+            <div className="d-flex justify-content-end">
+               <button onClick={handleLogout}>Logout</button>
+            </div>
+         </Col>
+      </Row>
+      <Row>
+         <Col>
+            <div className="h1">Code Reviewer Dashboard</div>
+         </Col>
+      </Row>
       <div
          className="d-grid flex-column gap-5"
          style={{gridTemplateColumns: "repeat(auto-fit, 18rem)"}}
@@ -52,13 +53,14 @@ function Dashboard() {
                            <b>GitHub URL</b> : {assignment.githubUrl}<br/>
                            <b>Branch</b> : {assignment.branch}
                         </Card.Text>
-                        <Button variant="secondary" onClick={() => navigate(`/assignments/${assignment.id}`)}>Edit</Button>
+                        <Button variant="secondary"
+                                onClick={() => navigate(`/assignments/${assignment.id}`)}>Edit</Button>
                      </Card.Body>
                   </Card>)
             })
          }
       </div>
-   </div>
+   </Container>)
 }
 
-export default Dashboard;
+export default CodeReviewerDashboard;

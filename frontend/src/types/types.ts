@@ -1,5 +1,6 @@
 
 export const URL='http://localhost:8080'
+export const ROLE_CODE_REVIEWER='ROLE_CODE_REVIEWER';
 export interface User {
    id: any;
    cohortStartDate: string;
@@ -10,7 +11,12 @@ export interface LoginCredentials {
    username: string,
    password: string
 }
-
+export interface DecodedToken{
+   authorities:string[],
+   exp:number,
+   iat:number,
+   sub:string
+}
 export interface Assignment {
    id: any;
    status: string;

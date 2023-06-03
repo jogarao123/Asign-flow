@@ -1,4 +1,4 @@
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import * as React from "react";
 import {useEffect, useState} from "react";
 import {Assignment, AssignmentEnum, AssignmentStatus} from "../../types/types.ts";
@@ -7,12 +7,13 @@ import {useUpdateAssignment} from "../../hooks/useUpdateAssignment.ts";
 import {Badge, Button, ButtonGroup, Col, Container, Dropdown, DropdownButton, Form, Row} from "react-bootstrap";
 
 function AssignmentView() {
-   const params = useParams()
+   const navigate = useNavigate();
+   const params = useParams();
    const id = params?.id;
    const {data: fetchedAssignment} = useFetchAssignments(id);
    const [assignment, setAssignment] = useState<Assignment | undefined>(fetchedAssignment?.assignment);
    const [assignmentEnums, setAssignmentEnums] = useState<AssignmentEnum[] | undefined>(fetchedAssignment?.assignmentEnums);
-   const [assignmentStatuses,setAssignmentStatuses]=useState<AssignmentStatus[]|undefined>(fetchedAssignment?.assignmentStatusEnums);
+   const [assignmentStatuses, setAssignmentStatuses] = useState<AssignmentStatus[] | undefined>(fetchedAssignment?.assignmentStatusEnums);
    const updateAssignment = useUpdateAssignment(id);
 
    useEffect(() => {
@@ -37,9 +38,9 @@ function AssignmentView() {
    }
    const handleSubmit = async () => {
       if (assignment) {
-         const newAssignment:Assignment={...assignment};
-         if(assignment.status===assignmentStatuses?.[0].status)
-            newAssignment.status=assignmentStatuses?.[1].status;
+         const newAssignment: Assignment = {...assignment};
+         if (assignment.status === assignmentStatuses?.[0].status)
+            newAssignment.status = assignmentStatuses?.[1].status;
 
          await updateAssignment.mutate(newAssignment)
       }
@@ -72,11 +73,13 @@ function AssignmentView() {
                      as={ButtonGroup}
                      id="assignmentName"
                      variant={"info"}
-                     title={assignment.number?`Assignment ${ assignment.number}` : 'Select an Assignment'}
+                     title={assignment.number ? `Assignment ${assignment.number}` : 'Select an Assignment'}
                      onSelect={handleSelect}
                   >
                      {assignmentEnums && assignmentEnums.map((assignmentEnum: AssignmentEnum) => (
-                        <Dropdown.Item eventKey={assignmentEnum.assignmentNum}>
+                        <Dropdown.Item
+                           key={assignmentEnum.assignmentNum}
+                           eventKey={assignmentEnum.assignmentNum}>
                            {assignmentEnum.assignmentNum}
                         </Dropdown.Item>
                      ))}
@@ -112,8 +115,13 @@ function AssignmentView() {
                   />
                </Col>
             </Form.Group>
-            <Button size="lg" onClick={handleSubmit}>Submit Assignment</Button>
+            <div className="d-flex gap-5 mt-1">
 
+               <Button size="lg" onClick={handleSubmit}>Submit Assignment</Button>
+               <Button size="lg" variant="secondary" onClick={() => navigate('/dashboard')}>
+                  Back
+               </Button>
+            </div>
          </Container>
 
 
