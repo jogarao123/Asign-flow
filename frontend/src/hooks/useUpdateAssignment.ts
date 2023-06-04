@@ -12,7 +12,6 @@ export const useUpdateAssignment = () => {
    }, {
       onSuccess: (updatedAssignment:Assignment) => {
          // Trigger refetch of assignments query after update operation
-         console.log('in onsuccess : updated Assignment is ', updatedAssignment)
          queryClient.invalidateQueries(['assignment', 'all']);
          queryClient.invalidateQueries(['assignment',updatedAssignment.id])
       },

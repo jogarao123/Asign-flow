@@ -4,11 +4,12 @@ import {Badge, Button, Card, Col, Container, Row} from "react-bootstrap";
 import {useLocalStorage} from "../../util/useLocalStorage.ts";
 import jwt_decode from 'jwt-decode';
 import {useUpdateAssignment} from "../../hooks/useUpdateAssignment.ts";
+import {useNavigate} from "react-router-dom";
 
 
 function CodeReviewerDashboard() {
    const [token, setToken] = useLocalStorage('jwt', '');
-   // const navigate = useNavigate();
+   const navigate = useNavigate();
    const updateAssignment = useUpdateAssignment();
    const {data: assignments} = useFetchAssignments();
 
@@ -24,8 +25,11 @@ function CodeReviewerDashboard() {
          status: 'In Review',
          codeReviewer: {...assignment.codeReviewer, username: json.sub}
       };
-      console.log('updated Ass', updatedAssignment);
       await updateAssignment.mutate(updatedAssignment);
+   }
+   const handleEditReview = (assignment: Assignment) => {
+      console.log('hello ')
+      navigate(`/assignments/${assignment.id}`);
    }
 
    return (<Container>
@@ -77,7 +81,7 @@ function CodeReviewerDashboard() {
                                        <b>Branch</b> : {assignment.branch}
                                     </Card.Text>
                                     <Button variant="secondary"
-                                            onClick={() => handleClaim(assignment)}>Claim</Button>
+                                            onClick={() => handleEditReview(assignment)}>Edit</Button>
                                  </Card.Body>
                               </Card>)
                         }))}

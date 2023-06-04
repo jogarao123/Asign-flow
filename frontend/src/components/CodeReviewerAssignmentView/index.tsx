@@ -1,14 +1,14 @@
 import {useNavigate, useParams} from "react-router-dom";
 import * as React from "react";
 import {useEffect, useState} from "react";
-import {Assignment, AssignmentEnum, AssignmentMetadata, COMPLETED} from "../../types/types.ts";
+import {Assignment, AssignmentMetadata, COMPLETED, IN_REVIEW, NEEDS_UPDATE, Status} from "../../types/types.ts";
 import {useFetchAssignments} from "../../hooks/useFetchAssignment.ts";
 import {useUpdateAssignment} from "../../hooks/useUpdateAssignment.ts";
-import {Badge, Button, ButtonGroup, Col, Container, Dropdown, DropdownButton, Form, Row} from "react-bootstrap";
+import {Badge, Button, Col, Container, Form, Row} from "react-bootstrap";
 import {useAssignmentMetadata} from "../../hooks/useAssignmentMetadata.ts";
 import {UseQueryResult} from "react-query";
 
-function AssignmentView() {
+function CodeReviewerAssignmentView() {
    const navigate = useNavigate();
    const params = useParams();
    const id = params?.id;
@@ -34,31 +34,15 @@ function AssignmentView() {
    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       updateAssignmentState(e.target.name, e.target.value);
    }
-   const handleSubmit = async () => {
+   const handleSave = async (nxtStatus: Status) => {
       if (assignment && assignmentMetadata) {
          const newAssignment: Assignment = {...assignment};
-         if (assignment.status === assignmentMetadata.assignmentStatusEnums[0].status)
-            newAssignment.status = assignmentMetadata.assignmentStatusEnums[1].status;
-
+         newAssignment.status = nxtStatus;
          await updateAssignment.mutate(newAssignment)
+         setAssignment(newAssignment)
       }
    }
 
-   const handleSelect = (eventKey: any) => {
-      updateAssignmentState('number', eventKey)
-   }
-
-   const getBackButton = () => {
-      return <div className="d-flex gap-5">
-         <Button
-            size="lg"
-            variant="secondary"
-            onClick={() => (navigate("/dashboard"))}
-         >
-            Back
-         </Button>
-      </div>
-   }
 
    const getAssignmentFormView = () => {
       return (assignment?.id && assignmentMetadata) ? <>
@@ -73,29 +57,6 @@ function AssignmentView() {
                   </Badge>
                </Col>
             </Row>
-
-            <Form.Group as={Row} className="my-3" controlId="formPlaintextEmail">
-               <Form.Label column sm="3" md="2">
-                  Assignment Number:
-               </Form.Label>
-               <Col sm="9" md="8" lg="6">
-                  <DropdownButton
-                     as={ButtonGroup}
-                     id="assignmentName"
-                     variant={"info"}
-                     title={assignment.number ? `Assignment ${assignment.number}` : 'Select an Assignment'}
-                     onSelect={handleSelect}
-                  >
-                     {assignmentMetadata && assignmentMetadata.assignmentEnums.map((assignmentEnum: AssignmentEnum) => (
-                        <Dropdown.Item
-                           key={assignmentEnum.assignmentNum}
-                           eventKey={assignmentEnum.assignmentNum}>
-                           {assignmentEnum.assignmentNum}
-                        </Dropdown.Item>
-                     ))}
-                  </DropdownButton>
-               </Col>
-            </Form.Group>
             <Form.Group as={Row} className="my-3" controlId="githubUrl">
                <Form.Label column sm="3" md="2">
                   Github Url
@@ -104,6 +65,7 @@ function AssignmentView() {
                   <Form.Control
                      name="githubUrl"
                      type="url"
+                     readOnly={true}
                      onChange={handleChange}
                      value={assignment.githubUrl || ''}
                      placeholder="https://github.com/username/repo-name"
@@ -111,6 +73,7 @@ function AssignmentView() {
                   </Form.Control>
                </Col>
             </Form.Group>
+
             <Form.Group as={Row} className="mb-3" controlId="branch">
                <Form.Label column sm="3" md="2">
                   Branch:
@@ -119,36 +82,70 @@ function AssignmentView() {
                   <Form.Control
                      name="branch"
                      type="text"
+                     readOnly={true}
                      placeholder="example_branch_name"
                      onChange={handleChange}
                      value={assignment.branch || ''}
                   />
                </Col>
             </Form.Group>
-            {
-               (assignment.status === COMPLETED) ? <>
-                     <Form.Group as={Row} className="mb-3" controlId="codeReviewVideoUrl">
-                        <Form.Label column sm="3" md="2">
-                           Code Review VideoUrl
-                        </Form.Label>
-                        <Col sm="9" md="8" lg="6">
-                           <a
-                              href={assignment.codeReviewVideoUrl || ''}
-                              style={{fontWeight: "bold"}}
-                           >
-                              {assignment.codeReviewVideoUrl}
-                           </a>
-                        </Col>
-                     </Form.Group>
-                     <div className="d-flex gap-5">
-                        {getBackButton()}
-                     </div>
-                  </> :
-                  <div className="d-flex gap-5">
-                     <Button size="lg" onClick={handleSubmit}>Submit Assignment</Button>
-                     {getBackButton()}
-                  </div>
-            }
+
+            <Form.Group as={Row} className="mb-3" controlId="codeReviewVideoUrl">
+               <Form.Label column sm="3" md="2">
+                  Code Review VideoUrl
+               </Form.Label>
+               <Col sm="9" md="8" lg="6">
+                  <Form.Control
+                     name="codeReviewVideoUrl"
+                     type="text"
+                     placeholder="https://screencast-o-matic.com/something"
+                     onChange={handleChange}
+                     value={assignment.codeReviewVideoUrl || ''}
+                  />
+               </Col>
+            </Form.Group>
+
+            <div className="d-flex gap-5 mt-1">
+
+               {assignment.status === "Completed" ? (
+                  <Button
+                     size="lg"
+                     variant="secondary"
+                     onClick={() => handleSave(IN_REVIEW)}
+                  >
+                     Re-Claim
+                  </Button>
+               ) : (
+                  <Button
+                     size="lg"
+                     onClick={() => handleSave(COMPLETED)}
+                  >
+                     Complete Review
+                  </Button>
+               )}
+
+               {assignment.status === "Needs Update" ? (
+                  <Button
+                     size="lg"
+                     variant="secondary"
+                     onClick={() => handleSave(IN_REVIEW)}
+                  >
+                     Re-Claim
+                  </Button>
+               ) : (
+                  <Button
+                     size="lg"
+                     variant="danger"
+                     onClick={() => handleSave(NEEDS_UPDATE)}
+                  >
+                     Reject Assignment
+                  </Button>
+               )}
+
+               <Button size="lg" variant="secondary" onClick={() => navigate('/dashboard')}>
+                  Back
+               </Button>
+            </div>
          </Container>
 
 
@@ -160,4 +157,4 @@ function AssignmentView() {
    </>
 }
 
-export default AssignmentView;
+export default CodeReviewerAssignmentView;
