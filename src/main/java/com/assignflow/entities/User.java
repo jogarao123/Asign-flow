@@ -19,7 +19,7 @@ public class User {
     private Long id;
     private LocalDate cohortStartDate;
     private String username;
-
+    private String name;
     @JsonIgnore
     private String password;
 

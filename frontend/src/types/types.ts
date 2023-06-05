@@ -22,6 +22,7 @@ export interface User {
    cohortStartDate: string;
    username: string;
    password: string;
+   name:string|null;
 }
 
 export interface LoginCredentials {

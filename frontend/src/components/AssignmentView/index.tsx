@@ -4,7 +4,7 @@ import {useEffect, useState} from "react";
 import {
    Assignment,
    AssignmentEnum,
-   AssignmentMetadata,
+   AssignmentMetadata, Comment,
    COMPLETED,
    PENDING_SUBMISSION, RESUBMITTED,
    Status,
@@ -17,6 +17,7 @@ import {UseQueryResult} from "react-query";
 import StatusBadge from "../StatusBadge";
 import {useAssignmentMetadata} from "../../hooks/useAssignmentMetadata.ts";
 import CommentBox from "../CommentBox";
+import {useFetchCommentsByAssignmentId} from "../../hooks/useFetchComments.ts";
 
 function AssignmentView() {
    const navigate = useNavigate();
@@ -24,6 +25,7 @@ function AssignmentView() {
    const id = params?.id;
    const {data: assignmentMetadata}: UseQueryResult<AssignmentMetadata, unknown> = useAssignmentMetadata();
    const {data: fetchedAssignment}: UseQueryResult<Assignment, unknown> = useFetchAssignments(id);
+   const {data: fetchedComments} = useFetchCommentsByAssignmentId(id);
    const [assignment, setAssignment] = useState<Assignment | undefined>(fetchedAssignment);
    const updateAssignment = useUpdateAssignment();
    useEffect(() => {
@@ -163,6 +165,14 @@ function AssignmentView() {
             }
             <div className="mt-5">
                <CommentBox assignmentId={id ? parseInt(id) : null}/>
+            </div>
+            <div className="mt-5">
+               {
+                  fetchedComments &&
+                  fetchedComments.map((comment: Comment) => {
+                     return <div>{comment.text} -{comment.createdBy.name}</div>
+                  })
+               }
             </div>
 
 

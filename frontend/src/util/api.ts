@@ -33,13 +33,17 @@ export const fetchAssignmentById = (id: string, jwt: string) => {
 }
 
 export const fetchAssignmentMetadata = (jwt: string) => {
-   return callApi(`/api/assignments/metadata` ,{method: 'GET', token: jwt});
+   return callApi(`/api/assignments/metadata`, {method: 'GET', token: jwt});
 }
 export const fetchAssignments = (jwt: string) => {
    return callApi(`/api/assignments`, {method: 'GET', token: jwt});
 }
-export const createComment=(body:CommentRequestType,jwt:string)=>{
-   return callApi(`/api/comments`,{method:'POST',body,token:jwt});
+export const createComment = (body: CommentRequestType, jwt: string) => {
+   return callApi(`/api/comments`, {method: 'POST', body, token: jwt});
+}
+
+export const fetchCommentsByAssignmentId = (assignmentId: number, jwt: string) => {
+   return callApi(`/api/comments?assignmentId=${assignmentId}`, {method: 'GET', token: jwt})
 }
 
 export const validateToken = (jwt: string) => {
