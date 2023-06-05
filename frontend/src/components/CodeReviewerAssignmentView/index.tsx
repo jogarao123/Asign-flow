@@ -1,18 +1,17 @@
 import {useNavigate, useParams} from "react-router-dom";
 import * as React from "react";
 import {useEffect, useState} from "react";
-import {Assignment, AssignmentMetadata, COMPLETED, IN_REVIEW, NEEDS_UPDATE, Status} from "../../types/types.ts";
+import {Assignment, COMPLETED, IN_REVIEW, NEEDS_UPDATE, Status} from "../../types/types.ts";
 import {useFetchAssignments} from "../../hooks/useFetchAssignment.ts";
 import {useUpdateAssignment} from "../../hooks/useUpdateAssignment.ts";
-import {Badge, Button, Col, Container, Form, Row} from "react-bootstrap";
-import {useAssignmentMetadata} from "../../hooks/useAssignmentMetadata.ts";
+import {Button, Col, Container, Form, Row} from "react-bootstrap";
 import {UseQueryResult} from "react-query";
+import StatusBadge from "../StatusBadge";
 
 function CodeReviewerAssignmentView() {
    const navigate = useNavigate();
    const params = useParams();
    const id = params?.id;
-   const {data: assignmentMetadata}: UseQueryResult<AssignmentMetadata, unknown> = useAssignmentMetadata();
    const {data: fetchedAssignment}: UseQueryResult<Assignment, unknown> = useFetchAssignments(id);
    const [assignment, setAssignment] = useState<Assignment | undefined>(fetchedAssignment);
    const updateAssignment = useUpdateAssignment();
@@ -35,7 +34,7 @@ function CodeReviewerAssignmentView() {
       updateAssignmentState(e.target.name, e.target.value);
    }
    const handleSave = async (nxtStatus: Status) => {
-      if (assignment && assignmentMetadata) {
+      if (assignment) {
          const newAssignment: Assignment = {...assignment};
          newAssignment.status = nxtStatus;
          await updateAssignment.mutate(newAssignment)
@@ -45,16 +44,14 @@ function CodeReviewerAssignmentView() {
 
 
    const getAssignmentFormView = () => {
-      return (assignment?.id && assignmentMetadata) ? <>
+      return (assignment?.id) ? <>
          <Container className="mt-5">
             <Row className="d-flex align-items-center">
                <Col>
                   {assignment.number && <h1>Assignment {assignment.number}</h1>}
                </Col>
                <Col>
-                  <Badge pill={true} style={{fontSize: "1em"}}>
-                     {assignment.status}
-                  </Badge>
+                  <StatusBadge status={assignment.status}/>
                </Col>
             </Row>
             <Form.Group as={Row} className="my-3" controlId="githubUrl">

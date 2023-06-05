@@ -1,10 +1,11 @@
 import {useFetchAssignments} from "../../hooks/useFetchAssignment.ts";
-import {Assignment, DecodedToken, IN_REVIEW, NEEDS_UPDATE, SUBMITTED} from "../../types/types.ts";
-import {Badge, Button, Card, Col, Container, Row} from "react-bootstrap";
+import {Assignment, DecodedToken, IN_REVIEW, NEEDS_UPDATE, RESUBMITTED, SUBMITTED} from "../../types/types.ts";
+import {Button, Card, Col, Container, Row} from "react-bootstrap";
 import {useLocalStorage} from "../../util/useLocalStorage.ts";
 import jwt_decode from 'jwt-decode';
 import {useUpdateAssignment} from "../../hooks/useUpdateAssignment.ts";
 import {useNavigate} from "react-router-dom";
+import StatusBadge from "../StatusBadge";
 
 
 function CodeReviewerDashboard() {
@@ -28,7 +29,6 @@ function CodeReviewerDashboard() {
       await updateAssignment.mutate(updatedAssignment);
    }
    const handleEditReview = (assignment: Assignment) => {
-      console.log('hello ')
       navigate(`/assignments/${assignment.id}`);
    }
 
@@ -71,9 +71,7 @@ function CodeReviewerDashboard() {
                                  <Card.Body className="d-flex flex-column justify-content-around">
                                     <Card.Title>Asssignment #{assignment?.number} </Card.Title>
                                     <div className="d-flex align-items-start">
-                                       <Badge pill={true} style={{fontSize: "1em"}}>
-                                          {assignment.status}
-                                       </Badge>
+                                       <StatusBadge status={assignment.status}/>
                                     </div>
 
                                     <Card.Text style={{marginTop: '1em'}}>
@@ -95,13 +93,14 @@ function CodeReviewerDashboard() {
          </div>
          {
             assignments &&
-            assignments.filter((assignment: Assignment) => assignment.status === SUBMITTED).length > 0
+            assignments.filter((assignment: Assignment) => assignment.status === SUBMITTED || assignment.status === RESUBMITTED).length > 0
                ? (
                   <div
                      className="d-grid gap-5"
                      style={{gridTemplateColumns: "repeat(auto-fit, 18rem)"}}
                   >
-                     {(assignments.filter((assignment: Assignment) => assignment.status === SUBMITTED)
+                     {(assignments.filter((assignment: Assignment) => assignment.status === SUBMITTED || assignment.status === RESUBMITTED)
+                        .sort((a1: Assignment) => a1.status === RESUBMITTED ? -1 : 1)
                         .map((assignment: Assignment) => {
                            return (
                               <Card
@@ -113,9 +112,7 @@ function CodeReviewerDashboard() {
                                  <Card.Body className="d-flex flex-column justify-content-around">
                                     <Card.Title>Asssignment #{assignment?.number} </Card.Title>
                                     <div className="d-flex align-items-start">
-                                       <Badge pill={true} style={{fontSize: "1em"}}>
-                                          {assignment.status}
-                                       </Badge>
+                                       <StatusBadge status={assignment.status}/>
                                     </div>
 
                                     <Card.Text style={{marginTop: '1em'}}>
@@ -156,9 +153,7 @@ function CodeReviewerDashboard() {
                                  <Card.Body className="d-flex flex-column justify-content-around">
                                     <Card.Title>Asssignment #{assignment?.number} </Card.Title>
                                     <div className="d-flex align-items-start">
-                                       <Badge pill={true} style={{fontSize: "1em"}}>
-                                          {assignment.status}
-                                       </Badge>
+                                       <StatusBadge status={assignment.status}/>
                                     </div>
 
                                     <Card.Text style={{marginTop: '1em'}}>

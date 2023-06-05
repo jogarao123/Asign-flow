@@ -1,12 +1,21 @@
 import {useNavigate, useParams} from "react-router-dom";
 import * as React from "react";
 import {useEffect, useState} from "react";
-import {Assignment, AssignmentEnum, AssignmentMetadata, COMPLETED} from "../../types/types.ts";
+import {
+   Assignment,
+   AssignmentEnum,
+   AssignmentMetadata,
+   COMPLETED,
+   PENDING_SUBMISSION, RESUBMITTED,
+   Status,
+   SUBMITTED
+} from "../../types/types.ts";
 import {useFetchAssignments} from "../../hooks/useFetchAssignment.ts";
 import {useUpdateAssignment} from "../../hooks/useUpdateAssignment.ts";
-import {Badge, Button, ButtonGroup, Col, Container, Dropdown, DropdownButton, Form, Row} from "react-bootstrap";
-import {useAssignmentMetadata} from "../../hooks/useAssignmentMetadata.ts";
+import {Button, ButtonGroup, Col, Container, Dropdown, DropdownButton, Form, Row} from "react-bootstrap";
 import {UseQueryResult} from "react-query";
+import StatusBadge from "../StatusBadge";
+import {useAssignmentMetadata} from "../../hooks/useAssignmentMetadata.ts";
 
 function AssignmentView() {
    const navigate = useNavigate();
@@ -34,13 +43,12 @@ function AssignmentView() {
    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       updateAssignmentState(e.target.name, e.target.value);
    }
-   const handleSubmit = async () => {
-      if (assignment && assignmentMetadata) {
+   const handleSave = async (nxtStatus: Status) => {
+      if (assignment) {
          const newAssignment: Assignment = {...assignment};
-         if (assignment.status === assignmentMetadata.assignmentStatusEnums[0].status)
-            newAssignment.status = assignmentMetadata.assignmentStatusEnums[1].status;
-
+         newAssignment.status = nxtStatus;
          await updateAssignment.mutate(newAssignment)
+         setAssignment(newAssignment)
       }
    }
 
@@ -61,16 +69,14 @@ function AssignmentView() {
    }
 
    const getAssignmentFormView = () => {
-      return (assignment?.id && assignmentMetadata) ? <>
+      return (assignment?.id ) ? <>
          <Container className="mt-5">
             <Row className="d-flex align-items-center">
                <Col>
                   {assignment.number && <h1>Assignment {assignment.number}</h1>}
                </Col>
                <Col>
-                  <Badge pill={true} style={{fontSize: "1em"}}>
-                     {assignment.status}
-                  </Badge>
+                  <StatusBadge status={assignment.status}/>
                </Col>
             </Row>
 
@@ -145,7 +151,11 @@ function AssignmentView() {
                      </div>
                   </> :
                   <div className="d-flex gap-5">
-                     <Button size="lg" onClick={handleSubmit}>Submit Assignment</Button>
+                     {
+                        assignment.status===PENDING_SUBMISSION?
+                        <Button size="lg" onClick={()=>handleSave(SUBMITTED)}>Submit Assignment</Button>:
+                           <Button size="lg" onClick={()=>handleSave(RESUBMITTED)}>ReSubmit Assignment</Button>
+                     }
                      {getBackButton()}
                   </div>
             }

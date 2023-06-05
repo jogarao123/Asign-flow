@@ -4,9 +4,11 @@ export const IN_REVIEW = "In Review";
 export const SUBMITTED = "Submitted";
 export const NEEDS_UPDATE = "Needs Update";
 export const COMPLETED = 'Completed';
-export const PENDING_SUBMISSION = "Pending Submission"
+export const PENDING_SUBMISSION = "Pending Submission";
+export const RESUBMITTED="ReSubmitted";
 
-export type Status = 'ROLE_CODE_REVIEWER' | 'Completed' | 'Needs Update' | 'Submitted' | 'In Review';
+export type Status = 'ROLE_CODE_REVIEWER' | 'Completed' | 'Needs Update' | 'Submitted' | 'In Review' | 'Pending Submission'| 'ReSubmitted';
+
 
 export interface User {
    id: any;
@@ -29,7 +31,7 @@ export interface DecodedToken {
 
 export interface Assignment {
    id: any;
-   status: string;
+   status: Status;
    githubUrl: string | null;
    branch: string | null;
    codeReviewVideoUrl: string | null;
@@ -44,7 +46,7 @@ export interface AssignmentEnum {
 }
 
 export interface AssignmentStatusEnum {
-   status: string,
+   status: Status,
    step: number
 }
 
