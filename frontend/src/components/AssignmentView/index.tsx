@@ -16,6 +16,7 @@ import {Button, ButtonGroup, Col, Container, Dropdown, DropdownButton, Form, Row
 import {UseQueryResult} from "react-query";
 import StatusBadge from "../StatusBadge";
 import {useAssignmentMetadata} from "../../hooks/useAssignmentMetadata.ts";
+import CommentBox from "../CommentBox";
 
 function AssignmentView() {
    const navigate = useNavigate();
@@ -56,6 +57,7 @@ function AssignmentView() {
       updateAssignmentState('number', eventKey)
    }
 
+
    const getBackButton = () => {
       return <div className="d-flex gap-5">
          <Button
@@ -69,7 +71,7 @@ function AssignmentView() {
    }
 
    const getAssignmentFormView = () => {
-      return (assignment?.id ) ? <>
+      return (assignment?.id) ? <>
          <Container className="mt-5">
             <Row className="d-flex align-items-center">
                <Col>
@@ -152,13 +154,18 @@ function AssignmentView() {
                   </> :
                   <div className="d-flex gap-5">
                      {
-                        assignment.status===PENDING_SUBMISSION?
-                        <Button size="lg" onClick={()=>handleSave(SUBMITTED)}>Submit Assignment</Button>:
-                           <Button size="lg" onClick={()=>handleSave(RESUBMITTED)}>ReSubmit Assignment</Button>
+                        assignment.status === PENDING_SUBMISSION ?
+                           <Button size="lg" onClick={() => handleSave(SUBMITTED)}>Submit Assignment</Button> :
+                           <Button size="lg" onClick={() => handleSave(RESUBMITTED)}>ReSubmit Assignment</Button>
                      }
                      {getBackButton()}
                   </div>
             }
+            <div className="mt-5">
+               <CommentBox assignmentId={id ? parseInt(id) : null}/>
+            </div>
+
+
          </Container>
 
 

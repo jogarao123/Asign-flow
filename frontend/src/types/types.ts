@@ -5,9 +5,16 @@ export const SUBMITTED = "Submitted";
 export const NEEDS_UPDATE = "Needs Update";
 export const COMPLETED = 'Completed';
 export const PENDING_SUBMISSION = "Pending Submission";
-export const RESUBMITTED="ReSubmitted";
+export const RESUBMITTED = "ReSubmitted";
 
-export type Status = 'ROLE_CODE_REVIEWER' | 'Completed' | 'Needs Update' | 'Submitted' | 'In Review' | 'Pending Submission'| 'ReSubmitted';
+export type Status =
+   'ROLE_CODE_REVIEWER'
+   | 'Completed'
+   | 'Needs Update'
+   | 'Submitted'
+   | 'In Review'
+   | 'Pending Submission'
+   | 'ReSubmitted';
 
 
 export interface User {
@@ -53,6 +60,19 @@ export interface AssignmentStatusEnum {
 export interface AssignmentMetadata {
    assignmentEnums: AssignmentEnum[],
    assignmentStatusEnums: AssignmentStatusEnum[]
+}
+
+export interface CommentRequestType {
+   assignmentId: number,
+   text: string
+}
+
+export interface Comment {
+   id: number,
+   assignment: Assignment,
+   createdBy: User,
+   createdDate: any,
+   text: string
 }
 
 export interface CallApiParams {

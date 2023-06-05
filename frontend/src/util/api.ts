@@ -1,4 +1,4 @@
-import {CallApiParams, URL} from "../types/types.ts";
+import {CallApiParams, CommentRequestType, URL} from "../types/types.ts";
 
 export const callApi = async (path: string, {method = 'GET', body = null, token = ''}: CallApiParams) => {
    const headers: Record<string, string> = {
@@ -37,6 +37,9 @@ export const fetchAssignmentMetadata = (jwt: string) => {
 }
 export const fetchAssignments = (jwt: string) => {
    return callApi(`/api/assignments`, {method: 'GET', token: jwt});
+}
+export const createComment=(body:CommentRequestType,jwt:string)=>{
+   return callApi(`/api/comments`,{method:'POST',body,token:jwt});
 }
 
 export const validateToken = (jwt: string) => {
