@@ -13,3 +13,9 @@
     margin-bottom: 1em !important;
     width: min-content !important;
 }
+.comment-bubble {
+    background: #eeeeee;
+    border-radius: 1em;
+    padding: 1em;
+    margin: 1em 0em;
+}

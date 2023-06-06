@@ -6,6 +6,7 @@ export const NEEDS_UPDATE = "Needs Update";
 export const COMPLETED = 'Completed';
 export const PENDING_SUBMISSION = "Pending Submission";
 export const RESUBMITTED = "ReSubmitted";
+export type SetValue<T> = (value: T | ((prevValue: T) => T)) => void;
 
 export type Status =
    'ROLE_CODE_REVIEWER'
@@ -65,7 +66,8 @@ export interface AssignmentMetadata {
 
 export interface CommentRequestType {
    assignmentId: number,
-   text: string
+   text: string,
+   id?:any
 }
 
 export interface Comment {

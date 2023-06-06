@@ -11,7 +11,7 @@ export const useCreateComment = () => {
       }
       , {
          onSuccess: (comment: Comment) => {
-            queryClient.invalidateQueries(['comments', comment.assignment.id]);
+            queryClient.invalidateQueries(['comments', comment.assignment.id])
          }
       })
 

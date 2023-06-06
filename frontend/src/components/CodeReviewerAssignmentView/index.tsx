@@ -7,6 +7,7 @@ import {useUpdateAssignment} from "../../hooks/useUpdateAssignment.ts";
 import {Button, Col, Container, Form, Row} from "react-bootstrap";
 import {UseQueryResult} from "react-query";
 import StatusBadge from "../StatusBadge";
+import CommentsView from "../Comments/CommentsView.tsx";
 
 function CodeReviewerAssignmentView() {
    const navigate = useNavigate();
@@ -143,6 +144,9 @@ function CodeReviewerAssignmentView() {
                   Back
                </Button>
             </div>
+            <CommentsView
+               assignmentId={id}
+            />
          </Container>
 
 

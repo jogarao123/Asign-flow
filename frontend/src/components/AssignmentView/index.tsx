@@ -4,9 +4,10 @@ import {useEffect, useState} from "react";
 import {
    Assignment,
    AssignmentEnum,
-   AssignmentMetadata, Comment,
+   AssignmentMetadata,
    COMPLETED,
-   PENDING_SUBMISSION, RESUBMITTED,
+   PENDING_SUBMISSION,
+   RESUBMITTED,
    Status,
    SUBMITTED
 } from "../../types/types.ts";
@@ -16,8 +17,7 @@ import {Button, ButtonGroup, Col, Container, Dropdown, DropdownButton, Form, Row
 import {UseQueryResult} from "react-query";
 import StatusBadge from "../StatusBadge";
 import {useAssignmentMetadata} from "../../hooks/useAssignmentMetadata.ts";
-import CommentBox from "../CommentBox";
-import {useFetchCommentsByAssignmentId} from "../../hooks/useFetchComments.ts";
+import CommentsView from "../Comments/CommentsView.tsx";
 
 function AssignmentView() {
    const navigate = useNavigate();
@@ -25,12 +25,12 @@ function AssignmentView() {
    const id = params?.id;
    const {data: assignmentMetadata}: UseQueryResult<AssignmentMetadata, unknown> = useAssignmentMetadata();
    const {data: fetchedAssignment}: UseQueryResult<Assignment, unknown> = useFetchAssignments(id);
-   const {data: fetchedComments} = useFetchCommentsByAssignmentId(id);
    const [assignment, setAssignment] = useState<Assignment | undefined>(fetchedAssignment);
    const updateAssignment = useUpdateAssignment();
    useEffect(() => {
       setAssignment(fetchedAssignment);
    }, [fetchedAssignment])
+
 
    const updateAssignmentState = (col: string, value: any) => {
       setAssignment((prevAssignment: Assignment | undefined) => {
@@ -163,19 +163,9 @@ function AssignmentView() {
                      {getBackButton()}
                   </div>
             }
-            <div className="mt-5">
-               <CommentBox assignmentId={id ? parseInt(id) : null}/>
-            </div>
-            <div className="mt-5">
-               {
-                  fetchedComments &&
-                  fetchedComments.map((comment: Comment) => {
-                     return <div>{comment.text} -{comment.createdBy.name}</div>
-                  })
-               }
-            </div>
-
-
+            <CommentsView
+               assignmentId={id}
+            />
          </Container>
 
 

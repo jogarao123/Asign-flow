@@ -2,7 +2,6 @@ package com.assignflow.controllers;
 
 import com.assignflow.dto.CommentDto;
 import com.assignflow.entities.Comment;
-import com.assignflow.entities.User;
 import com.assignflow.model.SecurityUser;
 import com.assignflow.service.CommentService;
 import lombok.AllArgsConstructor;
@@ -22,13 +21,19 @@ public class CommentController {
 
     @PostMapping
     public ResponseEntity<Comment> createComment(@RequestBody CommentDto commentDto
-                ,@AuthenticationPrincipal SecurityUser securityUser){
+            , @AuthenticationPrincipal SecurityUser securityUser) throws Exception {
 
-        return ResponseEntity.ok(commentService.save(commentDto,securityUser.getUser()));
+        return ResponseEntity.ok(commentService.save(commentDto, securityUser.getUser()));
+    }
+
+    @PutMapping("{commentId}")
+    public ResponseEntity<Comment> updateComment(@RequestBody CommentDto commentDto, @AuthenticationPrincipal SecurityUser suser) throws Exception {
+        Comment comment = commentService.save(commentDto, suser.getUser());
+        return ResponseEntity.ok(comment);
     }
 
     @GetMapping
-    public ResponseEntity<Set<Comment>> getCommentsForAssignment(@RequestParam Long assignmentId){
+    public ResponseEntity<Set<Comment>> getCommentsForAssignment(@RequestParam Long assignmentId) {
         return ResponseEntity.ok(commentService.getCommentsForAssignment(assignmentId));
     }
 }

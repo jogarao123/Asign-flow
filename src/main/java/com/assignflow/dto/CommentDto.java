@@ -10,4 +10,5 @@ import lombok.Setter;
 public class CommentDto {
     private Long assignmentId;
     private String text;
+    private Long id;
 }

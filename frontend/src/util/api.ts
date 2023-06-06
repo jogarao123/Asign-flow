@@ -41,6 +41,9 @@ export const fetchAssignments = (jwt: string) => {
 export const createComment = (body: CommentRequestType, jwt: string) => {
    return callApi(`/api/comments`, {method: 'POST', body, token: jwt});
 }
+export const updateComment = (body: CommentRequestType, jwt: string) => {
+   return callApi(`/api/comments/${body.id}`, {body, method: 'PUT', token: jwt})
+}
 
 export const fetchCommentsByAssignmentId = (assignmentId: number, jwt: string) => {
    return callApi(`/api/comments?assignmentId=${assignmentId}`, {method: 'GET', token: jwt})
