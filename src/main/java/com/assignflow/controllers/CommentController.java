@@ -5,6 +5,7 @@ import com.assignflow.entities.Comment;
 import com.assignflow.model.SecurityUser;
 import com.assignflow.service.CommentService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -30,6 +31,16 @@ public class CommentController {
     public ResponseEntity<Comment> updateComment(@RequestBody CommentDto commentDto, @AuthenticationPrincipal SecurityUser suser) throws Exception {
         Comment comment = commentService.save(commentDto, suser.getUser());
         return ResponseEntity.ok(comment);
+    }
+
+    @DeleteMapping("{commentId}")
+    public ResponseEntity<?> deleteComment(@PathVariable Long commentId, @AuthenticationPrincipal SecurityUser securityUser) {
+        try {
+            commentService.delete(commentId, securityUser.getUser());
+            return ResponseEntity.ok("Comment Deleted");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
     }
 
     @GetMapping

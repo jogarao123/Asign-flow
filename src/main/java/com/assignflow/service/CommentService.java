@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -34,7 +35,17 @@ public class CommentService {
         comment.setAssignment(assignmentService.findById(commentDto.getAssignmentId()).get());
         return commentRepository.save(comment);
     }
+    public void delete(Long id,User user) throws Exception {
+         Comment  comment= commentRepository.findById(id).get();
+         if(comment!=null){
+            if(comment.getCreatedBy().getId()!=user.getId()){
+                throw new Exception("Not Allowed To delete Comment");
+            }
+            commentRepository.deleteById(id);
+         }
+         else throw new Exception("Comment doesnt Exist");
 
+    }
     public Set<Comment> getCommentsForAssignment(Long assignmentId) {
         return commentRepository.findByAssignmentId(assignmentId);
     }

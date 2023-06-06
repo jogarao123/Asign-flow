@@ -10,8 +10,8 @@ import {useLocalStorage} from "./util/useLocalStorage.ts";
 import {useEffect, useState} from "react";
 import jwt_decode from 'jwt-decode';
 import {DecodedToken, ROLE_CODE_REVIEWER} from "./types/types.ts";
-import CodeReviewerAssignmentView from "./components/CodeReviewerAssignmentView";
 import CodeReviewerDashboard from "./components/CodeReviewerDashboard";
+import CodeReviewerAssignmentView from "./components/CodeReviewerAssignmentView";
 
 const queryClient = new QueryClient();
 

@@ -44,7 +44,9 @@ export const createComment = (body: CommentRequestType, jwt: string) => {
 export const updateComment = (body: CommentRequestType, jwt: string) => {
    return callApi(`/api/comments/${body.id}`, {body, method: 'PUT', token: jwt})
 }
-
+export const deleteComment = (id: number, jwt: string) => {
+   return callApi(`/api/comments/${id}`, {method: 'DELETE', token: jwt});
+}
 export const fetchCommentsByAssignmentId = (assignmentId: number, jwt: string) => {
    return callApi(`/api/comments?assignmentId=${assignmentId}`, {method: 'GET', token: jwt})
 }
