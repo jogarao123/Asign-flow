@@ -1,13 +1,14 @@
 import {useFetchAssignments} from "../../hooks/useFetchAssignment.ts";
 import {useCreateAssignment} from "../../hooks/useCreateAssignment.ts";
 import {Assignment} from "../../types/types.ts";
-import {Badge, Button, Card} from "react-bootstrap";
+import {Button, Card} from "react-bootstrap";
 import {useNavigate} from "react-router-dom";
 import {useLocalStorage} from "../../util/useLocalStorage.ts";
+import StatusBadge from "../StatusBadge";
 
 
 function Dashboard() {
-   const [,setJwt]=useLocalStorage('jwt','');
+   const [, setJwt] = useLocalStorage('jwt', '');
    const navigate = useNavigate();
    const {data: assignments} = useFetchAssignments();
 
@@ -17,9 +18,9 @@ function Dashboard() {
       const createdAssignment: Assignment = await mutateCreateAssignment(null);
       navigate(`/assignments/${createdAssignment.id}`);
    }
-   const handleLogout=()=>{
+   const handleLogout = () => {
       setJwt('')
-      window.location.href='/login'
+      window.location.href = '/login'
    }
 
    return <div style={{margin: "2em"}}>
@@ -43,9 +44,7 @@ function Dashboard() {
                      <Card.Body className="d-flex flex-column justify-content-around">
                         <Card.Title>Asssignment #{assignment?.number} </Card.Title>
                         <div className="d-flex align-items-start">
-                           <Badge pill={true} style={{fontSize: "1em"}}>
-                              {assignment.status}
-                           </Badge>
+                           <StatusBadge status={assignment?.status}/>
                         </div>
 
                         <Card.Text style={{marginTop: '1em'}}>

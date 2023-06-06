@@ -20,6 +20,7 @@ public class JwtUtil {
     @Value("${jwt.secret}")
     private String secret;
 
+    private final String AUTHORITIES="authorities";
     public String getUsernameFromToken(String token) {
         return getClaimFromToken(token, Claims::getSubject);
     }
@@ -53,7 +54,7 @@ public class JwtUtil {
 
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put("authorities",userDetails.getAuthorities()
+        claims.put(AUTHORITIES,userDetails.getAuthorities()
                 .stream()
                 .map(authority->authority.getAuthority())
                 .collect(Collectors.toList()));

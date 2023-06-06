@@ -19,7 +19,7 @@ public class User {
     private Long id;
     private LocalDate cohortStartDate;
     private String username;
-
+    private String name;
     @JsonIgnore
     private String password;
 
@@ -27,8 +27,11 @@ public class User {
     @JsonIgnore
     private List<Authority> authorities;
 
-    @OneToMany(mappedBy = "assignedTo")
+    @OneToMany(mappedBy = "user")
     @JsonIgnore
     private List<Assignment> assignments;
 
+    @OneToMany(mappedBy = "codeReviewer")
+    @JsonIgnore
+    private List<Assignment> reviewAssignments;
 }

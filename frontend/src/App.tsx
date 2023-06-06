@@ -10,6 +10,7 @@ import {useLocalStorage} from "./util/useLocalStorage.ts";
 import {useEffect, useState} from "react";
 import jwt_decode from 'jwt-decode';
 import {DecodedToken, ROLE_CODE_REVIEWER} from "./types/types.ts";
+import CodeReviewerAssignmentView from "./components/CodeReviewerAssignmentView";
 import CodeReviewerDashboard from "./components/CodeReviewerDashboard";
 
 const queryClient = new QueryClient();
@@ -38,8 +39,9 @@ function App() {
 
             <Route path="/login" element={<LoginPage/>}/>
             <Route path="/assignments/:id" element={
+
                <PrivateRoute>
-                  <AssignmentView/>
+                  {roles.find(role => role === ROLE_CODE_REVIEWER) ? <CodeReviewerAssignmentView/> : <AssignmentView/>}
                </PrivateRoute>
             }/>
          </Routes>

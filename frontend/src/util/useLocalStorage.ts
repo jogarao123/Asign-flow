@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
+import {SetValue} from "../types/types.ts";
 
-type SetValue<T> = (value: T | ((prevValue: T) => T)) => void;
 
 export function useLocalStorage<T>(key: string, initialValue: T): [T, SetValue<T>] {
    const [value, setValue] = useState<T>(() => {
