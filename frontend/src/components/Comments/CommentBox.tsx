@@ -4,18 +4,24 @@ import {useEffect, useState} from "react";
 import {useCreateComment} from "../../hooks/useCreateComment.ts";
 import {Comment} from "../../types/types.ts";
 import {useUpdateComment} from "../../hooks/useUpdateComment.ts";
+import {useFetchCommentsByAssignmentId} from "../../hooks/useFetchComments.ts";
+import {useQueryClient} from "react-query";
 
 interface CommentBoxProps {
    assignmentId: any,
    currentComment: Comment,
    setCurrentComment: any,
-   refetchComments:any
+   setComments: any
 }
 
-function CommentBox({assignmentId, currentComment, setCurrentComment,refetchComments}: CommentBoxProps) {
+function CommentBox({assignmentId, currentComment, setCurrentComment, setComments}: CommentBoxProps) {
+   const {data, refetch} = useFetchCommentsByAssignmentId(assignmentId);
+   const queryClient = useQueryClient();
+
    const [text, setText] = useState<string>('');
-   const createComment = useCreateComment();
-   const updateComment = useUpdateComment();
+   const {mutateAsync: createComment} = useCreateComment();
+   const {mutateAsync: updateComment} = useUpdateComment();
+
 
    useEffect(() => {
       if (currentComment)
@@ -25,12 +31,15 @@ function CommentBox({assignmentId, currentComment, setCurrentComment,refetchComm
    const handlePost = async () => {
       if (assignmentId) {
          if (currentComment) {
-            updateComment.mutate({id: currentComment.id, text, assignmentId});
+            await updateComment({id: currentComment.id, text, assignmentId});
          } else
-            createComment.mutate({assignmentId: parseInt(assignmentId), text});
+            await createComment({assignmentId: parseInt(assignmentId), text});
+         queryClient.invalidateQueries(['comments', assignmentId])
          setCurrentComment(null);
-         refetchComments();
       }
+      await refetch();
+
+      setComments(data)
    }
    const handleClear = () => {
       setCurrentComment(null);

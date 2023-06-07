@@ -29,6 +29,7 @@ public class CommentService {
             if (currentComment.getCreatedBy().getId() != user.getId()) {
                 throw new Exception("User cannot modify comment");
             }
+            comment.setCreatedDate(currentComment.getCreatedDate());
         }
         comment.setText(commentDto.getText());
         comment.setCreatedBy(user);

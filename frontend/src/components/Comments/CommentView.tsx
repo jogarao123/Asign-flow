@@ -5,6 +5,7 @@ import {useDeleteComment} from "../../hooks/useDeleteComment.ts";
 import {useQueryClient} from "react-query";
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import {useFetchCommentsByAssignmentId} from "../../hooks/useFetchComments.ts";
 
 dayjs.extend(relativeTime);
 
@@ -12,10 +13,12 @@ interface CommentProps {
    comment: Comment,
    currentComment: Comment,
    setCurrentComment: any,
-   refetchComments:any
+   setComments:any
 }
 
-function CommentView({comment, setCurrentComment,refetchComments}: CommentProps) {
+function CommentView({comment, setCurrentComment,setComments}: CommentProps) {
+   const {data: fetchedComments,refetch} = useFetchCommentsByAssignmentId(comment.assignment.id);
+
    const [token] = useLocalStorage('jwt', '');
    const {mutateAsync: deleteComment} = useDeleteComment();
    const queryClient = useQueryClient();
@@ -28,7 +31,8 @@ function CommentView({comment, setCurrentComment,refetchComments}: CommentProps)
    const handleDelete = async () => {
       await deleteComment(comment.id);
       queryClient.invalidateQueries(['comments', comment.assignment.id])
-      refetchComments();
+      await refetch();
+      setComments(fetchedComments)
    }
 
 
