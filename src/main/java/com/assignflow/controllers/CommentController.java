@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.Set;
 
 @RestController
@@ -37,7 +38,7 @@ public class CommentController {
     public ResponseEntity<?> deleteComment(@PathVariable Long commentId, @AuthenticationPrincipal SecurityUser securityUser) {
         try {
             commentService.delete(commentId, securityUser.getUser());
-            return ResponseEntity.ok("Comment Deleted");
+            return ResponseEntity.ok(new HashMap<>());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }

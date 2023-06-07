@@ -8,10 +8,11 @@ import {useUpdateComment} from "../../hooks/useUpdateComment.ts";
 interface CommentBoxProps {
    assignmentId: any,
    currentComment: Comment,
-   setCurrentComment: any
+   setCurrentComment: any,
+   refetchComments:any
 }
 
-function CommentBox({assignmentId, currentComment, setCurrentComment}: CommentBoxProps) {
+function CommentBox({assignmentId, currentComment, setCurrentComment,refetchComments}: CommentBoxProps) {
    const [text, setText] = useState<string>('');
    const createComment = useCreateComment();
    const updateComment = useUpdateComment();
@@ -28,6 +29,7 @@ function CommentBox({assignmentId, currentComment, setCurrentComment}: CommentBo
          } else
             createComment.mutate({assignmentId: parseInt(assignmentId), text});
          setCurrentComment(null);
+         refetchComments();
       }
    }
    const handleClear = () => {
