@@ -10,18 +10,22 @@ interface CommentsViewProps {
 
 function CommentsView({assignmentId}: CommentsViewProps) {
    const {data: fetchedComments} = useFetchCommentsByAssignmentId(assignmentId);
-   const [comments, setComments] = useState<Comment[]>([]);
+   const [comments, setComments] = useState<Comment[]>(fetchedComments);
    const [currentComment, setCurrentComment] = useState<any>(null);
    useEffect(() => {
       setComments(fetchedComments)
    }, [fetchedComments])
 
+   useEffect(()=>{
+      console.log('comments is ',comments)
+   },[comments])
    return <>
       <div className="mt-5">
          <CommentBox
             assignmentId={assignmentId}
             currentComment={currentComment}
             setCurrentComment={setCurrentComment}
+            setComments={setComments}
          />
       </div>
       <div className="mt-5">
@@ -32,6 +36,7 @@ function CommentsView({assignmentId}: CommentsViewProps) {
                   <CommentView comment={comment}
                                currentComment={currentComment}
                                setCurrentComment={setCurrentComment}
+                               setComments={setComments}
                   />
                </div>
             })
